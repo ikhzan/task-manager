@@ -20,14 +20,11 @@ export class TasksService {
       throw new Error("Team does not exist. Please create the team first.");
     }
 
-    // Create the task and assign it to the team
     const task = new this.taskModel(createTaskDto);
     task.team = new Types.ObjectId(createTaskDto.team);
     
-    // ✅ Save the task first
     await task.save();
 
-    // ✅ Push the task ID to the team's tasks array
     await this.teamModel.findByIdAndUpdate(
       createTaskDto.team,
       { $push: { tasks: task._id } },
@@ -38,7 +35,6 @@ export class TasksService {
   }
   
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    // Validate that the task belongs to either a user or a team (but not both)
     if (!createTaskDto.user && !createTaskDto.team) {
       throw new Error('Task must be assigned to either a user or a team.');
     }
@@ -146,6 +142,10 @@ export class TasksService {
     if (!result) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+  }
+
+  async removeAll(): Promise<void>{
+    await this.taskModel.deleteMany().exec();
   }
 
   async getTasksSortedByPriority(order: 'asc' | 'desc' = 'desc'): Promise<Task[]> {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -68,6 +68,13 @@ export class TeamService {
         }
 
         return this.teamModel.findById(teamId).exec(); // Return updated team
+    }
+
+    async remove(id: string): Promise<void> {
+        const result = await this.teamModel.findByIdAndDelete(id).exec();
+        if (!result) {
+            throw new NotFoundException(`Team with ID ${id} not found`);
+        }
     }
 
 }

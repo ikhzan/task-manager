@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body, Delete } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamMembersDto } from './dto/update-team.dto';
@@ -45,5 +45,12 @@ export class TeamsController {
   ) {
     return this.teamService.setUserRole(teamId, userId, role);
   }
+
+  // Delete a team by ID
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<void> {
+      return this.teamService.remove(id);
+  }
+  
 
 }

@@ -60,6 +60,12 @@ export class TasksController {
         return this.tasksService.remove(id);
     }
 
+    // Delete all tasks
+    @Delete()
+    async removeAll(): Promise<void> {
+        return this.tasksService.removeAll();
+    }
+
     @Get('sorted/:order')
     getSortedTasks(@Param('order') order: 'asc' | 'desc') {
         return this.tasksService.getTasksSortedByPriority(order);
