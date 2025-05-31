@@ -8,6 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TeamsModule } from './teams/teams.module';
+import { KpiService } from './kpi/kpi.service';
+import { KpiController } from './kpi/kpi.controller';
+import { KpiModule } from './kpi/kpi.module';
 
 
 @Module({
@@ -19,9 +22,11 @@ import { TeamsModule } from './teams/teams.module';
     MongooseModule.forRoot('mongodb://localhost:27017/task-manager'),
     TasksModule, 
     UsersModule, 
-    AuthModule, TeamsModule, 
+    AuthModule, 
+    TeamsModule, 
+    KpiModule, 
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, KpiController],
+  providers: [AppService, KpiService],
 })
 export class AppModule {}
