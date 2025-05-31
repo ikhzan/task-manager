@@ -3,14 +3,14 @@ import { Kpi, KpiDocument } from './kpi.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UsersService } from 'src/users/users.service';
-import { Task, TaskDocument } from 'src/tasks/schemas/task.schema';
+import { TasksService } from 'src/tasks/tasks.service';
 
 @Injectable()
 export class KpiService {
  constructor(
     @InjectModel(Kpi.name) private readonly kpiModel: Model<KpiDocument>, 
-    @InjectModel(Task.name) private taskModel: Model<TaskDocument>, 
     private readonly userService: UsersService, 
+    private readonly taskService: TasksService, 
   ) {} // ✅ Correct model injection
 
 
@@ -46,24 +46,26 @@ export class KpiService {
     return { name: kpi.name, target: kpi.target, currentAverage: averagePerformance };
   }
 
+  // ✅ Calculate User Task Completion Rate
   async getTaskCompletionRate(userId: string): Promise<number> {
-    const totalTasks = await this.taskModel.countDocuments({ user: userId });
-    const completedTasks = await this.taskModel.countDocuments({ user: userId, completed: true });
+    const totalTasks = await this.taskService.countTasksByUser(userId); // ✅ Fetch from TaskService
+    const completedTasks = await this.taskService.countCompletedTasksByUser(userId);
 
-    return totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100; // ✅ Completion Rate %
+    return totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100; // Completion Rate %
   }
-
+ // ✅ Calculate Average Completion Time
   async getAverageCompletionTime(userId: string): Promise<number> {
-    const tasks = await this.taskModel.find({ user: userId, completed: true });
-
+    const tasks = await this.taskService.getCompletedTasksByUser(userId);
     const totalTime = tasks.reduce((sum, task) => sum + (task.completionTime || 0), 0);
-    return tasks.length === 0 ? 0 : totalTime / tasks.length; // ✅ Average completion time
+    return tasks.length === 0 ? 0 : totalTime / tasks.length; // Average completion time
   }
 
+  // ✅ Get Total Revisions for a User
   async getTaskRevisions(userId: string): Promise<number> {
-    const tasks = await this.taskModel.find({ user: userId });
-    return tasks.reduce((sum, task) => sum + (task.revisions || 0), 0); // ✅ Total revisions across tasks
+    const tasks = await this.taskService.getTasksByUser(userId);
+    return tasks.reduce((sum, task) => sum + (task.revisions || 0), 0); // Total revisions across tasks
   }
+
 
   // ✅ Get Full KPI Data for a User
   async getUserKpi(userId: string): Promise<any> {

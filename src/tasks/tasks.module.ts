@@ -12,6 +12,7 @@ import { TeamsModule } from 'src/teams/teams.module';
     TeamsModule
   ],
   controllers: [TasksController],
-  providers: [TasksService]
+  providers: [TasksService],
+  exports: [TasksService]
 })
 export class TasksModule {}

@@ -220,4 +220,21 @@ export class TasksService {
     return this.taskModel.find({ tags: tag }).exec();
   }
 
+   async countTasksByUser(userId: string): Promise<number> {
+    return this.taskModel.countDocuments({ user: userId });
+  }
+
+  async countCompletedTasksByUser(userId: string): Promise<number> {
+    return this.taskModel.countDocuments({ user: userId, completed: true });
+  }
+
+  async getCompletedTasksByUser(userId: string): Promise<TaskDocument[]> {
+    return this.taskModel.find({ user: userId, completed: true });
+  }
+
+  async getTasksByUser(userId: string): Promise<TaskDocument[]> {
+    return this.taskModel.find({ user: userId });
+  }
+
+
 }
