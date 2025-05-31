@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My API</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ol {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        pre {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My API</h1>
+    </header>
+    <main>
+        <h2>Overview</h2>
+        <p>This API provides a set of tools for managing items.</p>
+        
+        <h2>Getting Started</h2>
+        <p>To get started, follow these steps:</p>
+        <ol>
+            <li>Install the package: <code>npm install my-api</code></li>
+            <li>Authenticate using your API key.</li>
+        </ol>
+
+        <h2>Endpoints</h2>
+        <h3>GET /api/items</h3>
+        <p>Retrieve a list of items.</p>
+
+        <h3>POST /api/items</h3>
+        <p>Create a new item.</p>
+        <pre><code>
+{
+    "name": "New Item"
+}
+        </code></pre>
+
+        <h3>GET /api/items/:id</h3>
+        <p>Retrieve a specific item by ID.</p>
+
+        <h3>DELETE /api/items/:id</h3>
+        <p>Delete a specific item by ID.</p>
+
+        <h2>Error Handling</h2>
+        <p>Common errors include:</p>
+        <ul>
+            <li>400 Bad Request: Invalid input.</li>
+            <li>404 Not Found: Item not found.</li>
+        </ul>
+
+        <h2>Support</h2>
+        <p>For support, contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+    </main>
+    <footer>
+        <p>&copy; 2025 My API. All rights reserved.</p>
+    </footer>
+</body>
+</html>
