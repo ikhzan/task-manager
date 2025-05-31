@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UsersService } from 'src/users/users.service';
 import { TasksService } from 'src/tasks/tasks.service';
+import { CreateKpiDto } from './dto/create-kpi.dto';
 
 @Injectable()
 export class KpiService {
@@ -13,15 +14,39 @@ export class KpiService {
     private readonly taskService: TasksService, 
   ) {} // ✅ Correct model injection
 
-
-  async createKpi(name: string, frequency: string, target: number, owner: string): Promise<Kpi> {
-    const userExists = await this.userService.findOne(owner); // ✅ Verify user existence
-
-   if (!userExists) {
-      throw new NotFoundException(`User with ID ${owner} not found`); // ✅ Structured error response
+    // ✅ Create KPI
+  async createKpi(createKpiDto: CreateKpiDto): Promise<Kpi> {
+    const userExists = await this.userService.findOne(createKpiDto.owner);
+    if(!userExists){
+      throw new NotFoundException(`User with Name ${createKpiDto.owner} not found`)
     }
+    return this.kpiModel.create(createKpiDto);
+  }
 
-    return this.kpiModel.create({ name, frequency, target, owner });
+  // ✅ Retrieve KPI by ID
+  async getKpiById(kpiId: string): Promise<Kpi> {
+    const kpi = await this.kpiModel.findById(kpiId);
+    if (!kpi) throw new NotFoundException(`KPI with ID ${kpiId} not found`);
+    return kpi;
+  }
+
+  // ✅ Retrieve all KPIs for a user
+  async getUserKpis(userId: string): Promise<Kpi[]> {
+    return this.kpiModel.find({ user: userId });
+  }
+
+  // ✅ Update KPI
+  async updateKpi(kpiId: string, updateData: Partial<Kpi>): Promise<Kpi> {
+    const kpi = await this.kpiModel.findByIdAndUpdate(kpiId, updateData, { new: true });
+    if (!kpi) throw new NotFoundException(`KPI with ID ${kpiId} not found`);
+    return kpi;
+  }
+
+  // ✅ Delete KPI
+  async deleteKpi(kpiId: string): Promise<{ message: string }> {
+    const kpi = await this.kpiModel.findByIdAndDelete(kpiId);
+    if (!kpi) throw new NotFoundException(`KPI with ID ${kpiId} not found`);
+    return { message: 'KPI deleted successfully' };
   }
 
   async updatePerformance(kpiId: string, date: string, value: number): Promise<Kpi> {
