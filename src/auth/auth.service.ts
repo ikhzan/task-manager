@@ -18,7 +18,7 @@ export class AuthService {
 
         const isValidPassword = await bcrypt.compare(password, user.password);
         return isValidPassword ? user : null;
-        }
+    }
 
 
     async login(username: string, password: string): Promise<{accessToken: string; refreshToken: string}>{
@@ -27,11 +27,13 @@ export class AuthService {
 
         return this.generateTokens(payload)
     }
-    // Overload to support payload parameter
-    async generateTokens(payload: { userId: string; username: string }): Promise<{ accessToken: string; refreshToken: string }> {
+
+    async generateTokens(payload: { userId: string; username: string }): 
+        Promise<{ accessToken: string; refreshToken: string; userId: string }> {
         const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
         const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-        return { accessToken, refreshToken };
+
+        return { accessToken, refreshToken, userId: payload.userId }; // ✅ Return userId explicitly
     }
 
     async refreshToken(refreshToken: string): Promise<string> {
