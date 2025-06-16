@@ -5,7 +5,7 @@ it is based on nest js project, it will be integrated all feature with client mo
 
 ![Task Manager Screenshot](screenshots/swagger.png)
 
-url_path = http://localhost:3000/api
+url_path = http://localhost:3000/
 
 ### Routes
 1. Auth
