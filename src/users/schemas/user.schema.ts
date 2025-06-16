@@ -11,19 +11,19 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, unique: true }) // Ensure email is unique
+  @Prop({ required: true, unique: true }) 
   email: string;
 
-  @Prop({ type: [String], default: [] }) // Store team IDs for membership
+  @Prop({ type: [String], default: [] }) 
   teams: string[];
 
   @Prop({ type: [String], enum: ['admin', 'member'], default: ['member'] }) // User roles in teams
   roles: string[];
 
-  @Prop({ required: false }) // ✅ Store JWT token after login
+  @Prop({ required: false })
   accessToken?: string;
 
-  @Prop({ required: false }) // ✅ Store JWT token after login
+  @Prop({ required: false })
   refreshToken?: string;
 }
 

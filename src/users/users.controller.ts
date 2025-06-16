@@ -25,12 +25,11 @@ export class UsersController {
   }
 
   @Get('profile')
-  @UseGuards(AuthGuard) // ✅ Protect route with authentication
+  @UseGuards(AuthGuard)
   async getUserProfile(@Request() req) {
     return req.user;
   }
 
-  // Delete a user by ID
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
       return this.userService.remove(id);

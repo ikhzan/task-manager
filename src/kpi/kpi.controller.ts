@@ -8,6 +8,11 @@ import { UpdateKpiDto } from './dto/update-kpi.dto';
 export class KpiController {
   constructor(private readonly kpiService: KpiService) {}
 
+  @Get()
+  async fetchKpi() {
+    return this.kpiService.getKpi();
+  }
+
   @Post('/create')
   async createKpi(@Body() body: CreateKpiDto) {
     return this.kpiService.createKpi(body);

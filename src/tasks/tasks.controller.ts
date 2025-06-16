@@ -1,24 +1,38 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { Task, TaskDocument } from './schemas/task.schema';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Query } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/commons/public.decorators';
 
 
+@UseGuards(AuthGuard)
 @Controller('tasks')
 export class TasksController {
     constructor(private readonly tasksService: TasksService) {}
 
-    // Create a new task
     @Post()
     async create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
         return this.tasksService.createTask(createTaskDto);
     }
 
+    @Public()
     @Get('user/:userId')
     getUserTasks(@Param('userId') userId: string) {
         return this.tasksService.getUserTasks(userId);
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('user/totalcompletedtask/:userId')
+    getTotalCompletedTask(@Param('userId') userId: string){
+        return this.tasksService.countCompletedTasksByUser(userId);
+    }
+
+    @Get('user/completedtasks/:userId')
+    getCompletedTasks(@Param('userId') userId: string){
+        return this.tasksService.getUserCompletedTasks(userId);
     }
 
     @Post('/team')

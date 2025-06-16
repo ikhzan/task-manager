@@ -1,22 +1,20 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-  import * as cors from 'cors';
+import { AuthGuard } from '@nestjs/passport';
 
 async function bootstrap() {
- const app = await NestFactory.create(AppModule);
-  
+  const app = await NestFactory.create(AppModule);
+
   // Enable validation
   app.useGlobalPipes(new ValidationPipe());
 
- app.enableCors({
-  origin: '*', // Allow all origins (adjust for security later)
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-});
-
-
+  app.enableCors({
+    origin: '*', // Allow all origins (adjust for security later)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
   // Swagger setup
   const config = new DocumentBuilder()
@@ -28,6 +26,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // await app.listen(3000);
+  //app.useGlobalGuards(new (AuthGuard('jwt'))()); // Use the strategy name, e.g., 'jwt'
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

@@ -6,9 +6,9 @@ import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly userService: UsersService, 
+        private readonly userService: UsersService,
         private readonly jwtService: JwtService
-    ){}
+    ) { }
 
     async validateUser(username: string, password: string): Promise<any | null> {
         const user = await this.userService.findOne(username);
@@ -21,14 +21,14 @@ export class AuthService {
     }
 
 
-    async login(username: string, password: string): Promise<{accessToken: string; refreshToken: string}>{
-        const user = await this.validateUser(username,password);
+    async login(username: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
+        const user = await this.validateUser(username, password);
         const payload = { userId: user._id.toString(), username: user.username }; // ✅ Ensure userId is included
 
         return this.generateTokens(payload)
     }
 
-    async generateTokens(payload: { userId: string; username: string }): 
+    async generateTokens(payload: { userId: string; username: string }):
         Promise<{ accessToken: string; refreshToken: string; userId: string }> {
         const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
         const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
@@ -38,10 +38,10 @@ export class AuthService {
 
     async refreshToken(refreshToken: string): Promise<string> {
         try {
-        const decoded = this.jwtService.verify(refreshToken);
-        return this.jwtService.sign({ userId: decoded.userId }, { expiresIn: '1h' });
+            const decoded = this.jwtService.verify(refreshToken);
+            return this.jwtService.sign({ userId: decoded.userId }, { expiresIn: '1h' });
         } catch (error) {
-        throw new Error('Invalid refresh token');
+            throw new Error('Invalid refresh token');
         }
     }
 

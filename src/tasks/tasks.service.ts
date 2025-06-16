@@ -96,6 +96,12 @@ export class TasksService {
     return tasks;
   }
 
+  // Fetch tasks for a specific user
+  async getUserCompletedTasks(userId: string): Promise<Task[]> {
+    const tasks = await this.taskModel.find({ user: new Types.ObjectId(userId), completed: true }).exec();
+    return tasks;
+  }
+
   // Fetch tasks for a specific team
  async getTeamTasks(teamId: string): Promise<Task[]> {
     console.log("Received teamId:", teamId); // Debug log
@@ -225,7 +231,8 @@ export class TasksService {
   }
 
   async countCompletedTasksByUser(userId: string): Promise<number> {
-    return this.taskModel.countDocuments({ user: userId, completed: true });
+    const tasks = await this.taskModel.find({ user: new Types.ObjectId(userId), completed: true }).exec();
+    return tasks.length;
   }
 
   async getCompletedTasksByUser(userId: string): Promise<TaskDocument[]> {
