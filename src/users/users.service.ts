@@ -14,10 +14,10 @@ export class UsersService {
     @InjectModel(User.name) private teamModel: Model<TeamDocument>
   ) {}
 
-  /**
-   * TODO, CRUD
-   * 
-   */
+
+  async getAllUsers(): Promise<User[]>{
+    return this.userModel.find()
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     return this.userModel.create(createUserDto);

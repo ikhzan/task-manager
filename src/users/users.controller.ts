@@ -1,17 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService){}
-    
-  @Post('register')
-  async register(@Body() body: { username: string; password: string; email: string }): Promise<User> {
-    return this.userService.create(body.username, body.password, body.email);
+
+  @Get()
+  fetchUsers(){
+    return this.userService.getAllUsers()
   }
 
   @Post()
@@ -25,7 +24,6 @@ export class UsersController {
   }
 
   @Get('profile')
-  @UseGuards(AuthGuard)
   async getUserProfile(@Request() req) {
     return req.user;
   }

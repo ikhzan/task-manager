@@ -3,6 +3,7 @@ import { TeamService } from './team.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamMembersDto } from './dto/update-team.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/commons/public.decorators';
 
 @UseGuards(AuthGuard)
 @Controller('teams')
@@ -14,6 +15,7 @@ export class TeamsController {
     return this.teamService.createTeam(createTeamDto);
   }
 
+  @Public()
   @Get()
   getAllTeams() {
     return this.teamService.getAllTeams();
