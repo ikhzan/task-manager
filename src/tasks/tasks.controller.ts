@@ -18,16 +18,19 @@ export class TasksController {
         return this.tasksService.createTask(createTaskDto);
     }
 
-    @Public()
     @Get('user/:userId')
     getUserTasks(@Param('userId') userId: string) {
         return this.tasksService.getUserTasks(userId);
     }
 
-    @UseGuards(AuthGuard)
     @Get('user/totalcompletedtask/:userId')
     getTotalCompletedTask(@Param('userId') userId: string){
         return this.tasksService.countCompletedTasksByUser(userId);
+    }
+
+    @Get('user/totalcompletedpendingtask/:userId')
+    getTotalCompletedPendingTask(@Param('userId') userId: string){
+        return this.tasksService.getUserTotalCompletedPendingTasks(userId);
     }
 
     @Get('user/completedtasks/:userId')

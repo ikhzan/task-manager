@@ -9,9 +9,9 @@ import { User, UserDocument } from 'src/users/schemas/user.schema';
 @Injectable()
 export class TeamService {
     constructor(
-        @InjectModel(Team.name) private teamModel: Model<TeamDocument>, 
+        @InjectModel(Team.name) private teamModel: Model<TeamDocument>,
         @InjectModel(User.name) private userModel: Model<UserDocument>
-    ) {}
+    ) { }
 
     // Create a new team
     async createTeam(createTeamDto: CreateTeamDto): Promise<Team> {
@@ -35,6 +35,14 @@ export class TeamService {
     // Get a single team by ID
     async getTeamById(teamId: string): Promise<Team | null> {
         return this.teamModel.findById(teamId).populate('members').populate('tasks').exec();
+    }
+
+    async getTeamByOwner(ownerId: string) {
+        return this.teamModel.find().exec();
+    }
+
+    async getTeamByMember(memberId: string): Promise<Team[]> {
+        return this.teamModel.find({ members: memberId }).exec();
     }
 
     // Update team members

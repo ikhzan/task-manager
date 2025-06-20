@@ -15,7 +15,6 @@ export class TeamsController {
     return this.teamService.createTeam(createTeamDto);
   }
 
-  @Public()
   @Get()
   getAllTeams() {
     return this.teamService.getAllTeams();
@@ -23,7 +22,14 @@ export class TeamsController {
 
   @Get(':teamId')
   getTeamById(@Param('teamId') teamId: string) {
+    console.log("getTeamById " + teamId);
     return this.teamService.getTeamById(teamId);
+  }
+
+  @Get('member/:memberId')
+  getTeamByMember(@Param('memberId') memberId: string) {
+    console.log("getTeamByMember " + memberId);
+    return this.teamService.getTeamByMember(memberId);
   }
 
   @Put(':teamId/members')

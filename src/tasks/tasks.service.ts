@@ -9,9 +9,9 @@ import { Team, TeamDocument } from 'src/teams/schemas/team.schema';
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name) private taskModel: Model<TaskDocument>, 
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
     @InjectModel(Team.name) private teamModel: Model<TeamDocument>
-  ){}
+  ) { }
 
   async createTaskForTeam(createTaskDto: CreateTaskDto): Promise<Task> {
     // Validate team exists
@@ -22,7 +22,7 @@ export class TasksService {
 
     const task = new this.taskModel(createTaskDto);
     task.team = new Types.ObjectId(createTaskDto.team);
-    
+
     await task.save();
 
     await this.teamModel.findByIdAndUpdate(
@@ -33,7 +33,7 @@ export class TasksService {
 
     return task;
   }
-  
+
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     if (!createTaskDto.user && !createTaskDto.team) {
       throw new Error('Task must be assigned to either a user or a team.');
@@ -97,13 +97,25 @@ export class TasksService {
   }
 
   // Fetch tasks for a specific user
+  async getUserTotalCompletedPendingTasks(userId: string): Promise<{ completed: number; pending: number }> {
+    const userObjectId = new Types.ObjectId(userId);
+
+    const [completed, pending] = await Promise.all([
+      this.taskModel.countDocuments({ user: userObjectId, completed: true }),
+      this.taskModel.countDocuments({ user: userObjectId, completed: false }),
+    ]);
+
+    return { completed: completed, pending: pending };
+  }
+
+  // Fetch tasks for a specific user
   async getUserCompletedTasks(userId: string): Promise<Task[]> {
     const tasks = await this.taskModel.find({ user: new Types.ObjectId(userId), completed: true }).exec();
     return tasks;
   }
 
   // Fetch tasks for a specific team
- async getTeamTasks(teamId: string): Promise<Task[]> {
+  async getTeamTasks(teamId: string): Promise<Task[]> {
     console.log("Received teamId:", teamId); // Debug log
     const tasks = await this.taskModel.find({ team: new Types.ObjectId(teamId) }).exec();
     console.log("Fetched Tasks for team:", tasks); // Debug log
@@ -114,7 +126,7 @@ export class TasksService {
     return this.taskModel.find({ $or: [{ user: ownerId }, { team: ownerId }] }).exec();
   }
 
-  async findAll(): Promise<Task[]>{
+  async findAll(): Promise<Task[]> {
     return this.taskModel.find().exec();
   }
 
@@ -142,7 +154,7 @@ export class TasksService {
     }
     return task;
   }
-    
+
   async remove(id: string): Promise<void> {
     const result = await this.taskModel.findByIdAndDelete(id).exec();
     if (!result) {
@@ -150,7 +162,7 @@ export class TasksService {
     }
   }
 
-  async removeAll(): Promise<void>{
+  async removeAll(): Promise<void> {
     await this.taskModel.deleteMany().exec();
   }
 
@@ -226,7 +238,7 @@ export class TasksService {
     return this.taskModel.find({ tags: tag }).exec();
   }
 
-   async countTasksByUser(userId: string): Promise<number> {
+  async countTasksByUser(userId: string): Promise<number> {
     return this.taskModel.countDocuments({ user: userId });
   }
 

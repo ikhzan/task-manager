@@ -19,17 +19,13 @@ export class UsersService {
     return this.userModel.find()
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
-  }
-
   async getUserTeams(userId: string): Promise<Team[]> {
     return this.teamModel.find({ members: userId }).exec();
   }
 
-  async create(username: string, password: string, email: string): Promise<User> {
-    const existingUser = await this.userModel.findOne({ username }).exec();
-    const existingEmail = await this.userModel.findOne({ email }).exec();
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const existingUser = await this.userModel.findOne({ username: createUserDto.username }).exec();
+    const existingEmail = await this.userModel.findOne({ email: createUserDto.email }).exec();
 
     if (existingUser) {
       throw new ConflictException('Username already exists');
@@ -39,8 +35,8 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new this.userModel({ username, password: hashedPassword, email });
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const newUser = new this.userModel({ fullName:createUserDto.fullName, username: createUserDto.username, password: hashedPassword, email: createUserDto.email });
     return newUser.save();
   }
 
